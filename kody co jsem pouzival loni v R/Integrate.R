@@ -1,0 +1,129 @@
+f<-function(x){
+  return(sqrt(9-x*x))
+}
+Horner<-function(x,coef){
+  n<-length(coef)
+  y<-coef[n]
+  for(i in (n-1):1){
+    y<-y*x+coef[i]
+  }
+  return(y)
+}
+HornerAntiderivative<-function(x,coef){
+  n<-length(coef)
+  y<-coef[n]/n
+  for(i in (n-1):1){
+    y<-y*x+coef[i]/i
+  }
+  return(y*x)
+}
+TrapezoidalRule<-function(f,a,b,n=1){
+  h<-(b-a)/n
+  sum<-(f(a)+f(b))/2
+  x<-a
+  if(n>1){
+    for(i in 1:(n-1)){
+      x<-x+h
+      sum<-sum+f(x)
+    } 
+  }
+  return(sum*h)
+}
+TrapezoidalRuleVar2<-function(f,a,b,n=1){
+  h<-(b-a)/n
+  x<-a+h*(0:n)
+  suma<-(f(x[1])+f(x[n+1]))/2
+  if(n>1) suma<-suma+sum(f(x[2:n]))
+  return(suma*h)
+}
+TrapezoidalRulePolynom<-function(coef,a,b,n=1){
+  h<-(b-a)/n
+  sum<-(Horner(a,coef)+Horner(b,coef))/2
+  x<-a
+  if(n>1){
+    for(i in 1:(n-1)){
+      x<-x+h
+      sum<-sum+Horner(x,coef)
+    } 
+  }
+  return(sum*h)
+}
+SimpsonRule<-function(f,a,b,n=1){
+  h<-(b-a)/(2*n)
+  x<-a+h
+  sum2<-0
+  sum4<-f(x)
+  if(n>1){
+    for(i in 1:(n-1)){
+      x<-x+h
+      sum2<-sum2+f(x)
+      x<-x+h
+      sum4<-sum4+f(x)
+    } 
+  }
+  return(h*(f(a)+f(b)+2*sum2+4*sum4)/3)
+}
+SimpsonRulePolynom<-function(coef,a,b,n=1){
+  h<-(b-a)/(2*n)
+  x<-a+h
+  sum2<-0
+  sum4<-Horner(x,coef)
+  if(n>1){
+    for(i in 1:(n-1)){
+      x<-x+h
+      sum2<-sum2+Horner(x,coef)
+      x<-x+h
+      sum4<-sum4+Horner(x,coef)
+    } 
+  }
+  return(h*(Horner(a,coef)+Horner(b,coef)+2*sum2+4*sum4)/3)
+}
+GaussianQuadrature2<-function(f,a,b,n=1){
+  h<-(b-a)/n
+  hpul<-h/2
+  c<-a+hpul
+  x<-sqrt(3)/3
+  suma<-f(hpul*x+c)+f(-hpul*x+c)
+  if(n>1){
+    for(i in 1:(n-1)){
+      c<-c+h
+      suma<-suma+f(hpul*x+c)+f(-hpul*x+c)
+    } 
+  }
+  return(suma*hpul)
+}
+GaussianQuadrature2Polynom<-function(coef,a,b,n=1){
+  h<-(b-a)/n
+  hpul<-h/2
+  c<-a+hpul
+  x<-sqrt(3)/3
+  suma<-Horner(hpul*x+c,coef)+Horner(-hpul*x+c,coef)
+  if(n>1){
+    for(i in 1:(n-1)){
+      c<-c+h
+      suma<-suma+Horner(hpul*x+c,coef)+Horner(-hpul*x+c,coef)
+    } 
+  }
+  return(suma*hpul)
+}
+
+coef<-c(-4,2,1,-7,3)
+a<-1
+b<-3
+print(HornerAntiderivative(b,coef)-HornerAntiderivative(a,coef))
+n<-1
+for(i in 1:15){
+  cat(n,"\t",TrapezoidalRulePolynom(coef,a,b,n),"\t",
+      SimpsonRulePolynom(coef,a,b,n),"\t",
+      GaussianQuadrature2Polynom(coef,a,b,n),"\n")
+  n<-n*2
+}
+print("-----------------")
+print(9*pi/4)
+a<-0
+b<-3
+n<-20
+cat(TrapezoidalRule(f,a,b,n),"\t",
+    TrapezoidalRuleVar2(f,a,b,n),"\t",
+    SimpsonRule(f,a,b,n),"\t",
+    GaussianQuadrature2(f,a,b,n))

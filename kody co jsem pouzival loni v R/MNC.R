@@ -1,0 +1,36 @@
+Horner<-function(a,x){
+  n<-length(a)
+  y<-a[n]
+  for(i in (n-1):1){
+    y<-y*x+a[i]
+  }
+  return(y)
+}
+
+koef<-1.5
+x<-seq(0,koef*pi,koef*pi/100000)
+y<-sin(x)
+n<-length(x)
+plot(x,y,type="l")
+
+xa<-seq(0,koef*pi,koef*pi/100)
+
+for(m in 2:4){
+  start.time<-Sys.time()
+  S<-matrix(0,m,m)
+  T<-array(0,m)
+  for(k in 1:n){
+    for(i in 1:m){
+      for(j in 1:m){
+        S[i,j]<-S[i,j]+x[k]^(i+j-2)
+      }
+      T[i]<-T[i]+y[k]*x[k]^(i-1)
+    }
+  }
+  a<-solve(S,T)
+  print(a)
+  end.time<-Sys.time()
+  print(end.time-start.time)
+  ya<-Horner(a,xa)
+  lines(xa,ya,col=1+m,lw=2)
+}

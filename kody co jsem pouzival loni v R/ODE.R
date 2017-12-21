@@ -1,0 +1,52 @@
+f<-function(x,y){
+  return(y*(log(y)-log(x))/x)
+  #return((1-y*sin(x))/cos(x))
+  #return((5*x*x-y)/(exp(x+y)))
+}
+RK1<-function(f,x,y,h){
+  return(y+h*f(x,y))
+}
+RK2a<-function(f,x,y,h){
+  hp<-0.5*h
+  return(y+h*f(x+hp,y+hp*f(x,y)))
+}
+RK2b<-function(f,x,y,h){
+  return(y+h*(f(x,y)+f(x+h,y+h*f(x,y)))/2)
+}
+RK4<-function(f,x,y,h){
+  k1<-h*f(x,y)
+  xp<-x+h/2
+  k2<-h*f(xp,y+k1/2)
+  k3<-h*f(xp,y+k2/2)
+  k4<-h*f(x+h,y+k3)
+  return(y+(k1+2*k2+2*k3+k4)/6)
+}
+n<-50
+h<-0.2
+#x<-h*(0:n)
+x<-1+h*(0:n)
+#y<-cos(x)+sin(x)
+y<-x*exp(1-x)
+y1<-y
+y2a<-y
+y2b<-y
+y4<-y
+for(i in 1:n){
+  y1[i+1]<-RK1(f,x[i],y1[i],h)
+  y2a[i+1]<-RK2a(f,x[i],y2a[i],h)
+  y2b[i+1]<-RK2b(f,x[i],y2b[i],h)
+  y4[i+1]<-RK4(f,x[i],y4[i],h)
+}
+plot(x,y,col="black",type="l")
+lines(x,y1,col="red")
+lines(x,y2a,col="green")
+lines(x,y2b,col="blue")
+lines(x,y4,col="brown")
+z<-matrix(0,n+1,6)
+z[,1]<-x
+z[,2]<-y
+z[,3]<-y1
+z[,4]<-y2a
+z[,5]<-y2b
+z[,6]<-y4
+write.table(z,"data.txt",row.names=FALSE,col.names=FALSE,sep="\t")
