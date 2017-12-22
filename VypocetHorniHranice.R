@@ -30,21 +30,27 @@ integruj <- function(dolniInterval, horniInterval, f, n){
     return(I)
 }
 
-dolnihranice = 0
-stred = dolnihranice
-odhatHorniHranice = 3
-presnost = 0.1
-hodnotaIntegralu = 1
-i <- integruj(dolnihranice,odhatHorniHranice,funkce,20000)
+
+dolnihranice <- 0
+stred <- dolnihranice
+odhadHorniHranice <- 3
+presnost <- 0.000001
+hodnotaIntegralu <- 1
+i <- integruj(dolnihranice,odhadHorniHranice,funkce,200000)
 while(abs(i - hodnotaIntegralu) > presnost ){
-    zmena = (odhatHorniHranice - stred)/2
+    print(i)
+    zmena <- abs((odhadHorniHranice - stred)/2)
+
+    print(zmena)
     if(i - hodnotaIntegralu > 0 ){
-        odhatHorniHranice = zmena
+        odhadHorniHranice <- odhadHorniHranice - zmena
+
     }
     else{
-        stred = odhatHorniHranice
-        odhatHorniHranice = odhatHorniHranice+zmena
+        stred <- odhadHorniHranice
+        odhadHorniHranice <- odhadHorniHranice+zmena
     }
-    i <- integruj(dolnihranice,odhatHorniHranice,funkce,20000)
+
+    i <- integruj(dolnihranice,odhadHorniHranice,funkce,200000)
     i
 }
