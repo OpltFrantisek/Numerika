@@ -51,10 +51,10 @@ MNC <- function(stupen,x,y){
 }
 
 
-x<-c(0,1,5,8,10,12,20,30,50,60,70)
-y<-c(0,2,3,1,4,5,8,1,-90,-45,20)
-plot(x,y,type="l")
+x<-c(0,1,2,3)
+y<-c(-500,150,200,240)
+plot(x,y,type="b")
 xa<-seq(0,90,0.01)
-a<-MNC(4,x,y)
+a<-MNC(2,x,y)
 ya<-Horner(a,xa)
 lines(xa,ya,col=4,lw=2)
